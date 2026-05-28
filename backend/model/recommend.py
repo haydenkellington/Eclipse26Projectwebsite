@@ -107,6 +107,7 @@ def recommend_pitch(payload: dict[str, Any]) -> dict[str, Any]:
         "baa": best_available["baa"],
         "mlb_frequency": best_available["mlb_frequency"],
         "model_weight": best_available["model_weight"],
+        "metrics_source": best_available["metrics_source"],
         "q_observed": best_available["q_observed"],
         "low_sample_warning": best_available["low_sample_warning"],
         "best_overall_pitch": best_overall["pitch"],

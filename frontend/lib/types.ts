@@ -26,6 +26,7 @@ export type PitchComparison = {
   baa: number;
   mlb_frequency: number;
   model_weight: number;
+  metrics_source: "statcast" | "deterministic_fallback";
   low_sample_warning: boolean;
 };
 
@@ -42,6 +43,7 @@ export type RecommendationResponse = {
   baa: number;
   mlb_frequency: number;
   model_weight: number;
+  metrics_source: "statcast" | "deterministic_fallback";
   q_observed: boolean;
   low_sample_warning: boolean;
   best_overall_pitch: PitchCode;

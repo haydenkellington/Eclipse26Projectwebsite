@@ -8,6 +8,7 @@ import pandas as pd
 import pybaseball as pyb
 from pybaseball import statcast
 from sklearn.model_selection import train_test_split
+import pickle
 
 from export_q_artifacts import export_augmented_q_table
 
@@ -18,6 +19,45 @@ RANDOM_STATE = 68
 N_EPOCHS = 8
 ALPHA = 0.05
 GAMMA = 0.95
+OUTS_VALUES = (0, 1, 2)
+
+WHIFF_DESCRIPTIONS = {
+    "swinging_strike",
+    "swinging_strike_blocked",
+    "missed_bunt",
+}
+
+SWING_DESCRIPTIONS = {
+    "swinging_strike",
+    "swinging_strike_blocked",
+    "foul",
+    "foul_tip",
+    "foul_bunt",
+    "missed_bunt",
+    "bunt_foul_tip",
+    "hit_into_play",
+}
+
+HIT_EVENTS = {"single", "double", "triple", "home_run"}
+
+AB_EVENTS = {
+    "field_out",
+    "strikeout",
+    "strikeout_double_play",
+    "single",
+    "double",
+    "triple",
+    "home_run",
+    "force_out",
+    "grounded_into_double_play",
+    "field_error",
+    "fielders_choice",
+    "fielders_choice_out",
+    "double_play",
+    "triple_play",
+    "sac_fly",
+    "sac_bunt",
+}
 
 
 class QLearningAgent:
@@ -64,6 +104,88 @@ class QLearningAgent:
             print(f"epoch {epoch + 1}/{n_epochs}: mse_delta={loss:.8f}", flush=True)
 
         return losses
+
+
+def _state_key_from_row(row: pd.Series, prev_pitch_type: str | None, outs: int) -> str:
+    prev = "NONE" if pd.isna(prev_pitch_type) else str(prev_pitch_type)
+    bases = f"{int(row['on_1b'])}{int(row['on_2b'])}{int(row['on_3b'])}"
+    batter_hand = "R" if int(row["batter_righty"]) == 1 else "L"
+    pitcher_hand = "R" if int(row["pitcher_righty"]) == 1 else "L"
+
+    return "|".join(
+        [
+            f"b{int(row['balls'])}",
+            f"s{int(row['strikes'])}",
+            f"o{int(outs)}",
+            f"bases{bases}",
+            f"bh{batter_hand}",
+            f"ph{pitcher_hand}",
+            f"prev{prev}",
+        ]
+    )
+
+
+def export_statcast_metrics(df: pd.DataFrame, output_path: str | Path = "model/metrics.pkl") -> dict:
+    metric_df = df.dropna(subset=["pitch_type", "delta_run_exp", "balls", "strikes"]).copy()
+    metric_df["_is_whiff"] = metric_df["description"].isin(WHIFF_DESCRIPTIONS)
+    metric_df["_is_swing"] = metric_df["description"].isin(SWING_DESCRIPTIONS)
+    metric_df["_is_hit"] = metric_df["events"].isin(HIT_EVENTS)
+    metric_df["_is_ab"] = metric_df["events"].isin(AB_EVENTS)
+
+    metrics_table: dict[str, dict[str, dict[str, float | int | bool]]] = {}
+
+    state_cols = [
+        "balls",
+        "strikes",
+        "on_1b",
+        "on_2b",
+        "on_3b",
+        "batter_righty",
+        "pitcher_righty",
+        "prev_pitch_type",
+    ]
+
+    metric_df["_state_sample_size"] = metric_df.groupby(state_cols, dropna=False)["pitch_type"].transform("size")
+    pitch_groups = metric_df.groupby(state_cols + ["pitch_type"], dropna=False)
+
+    for group_key, rows in pitch_groups:
+        *state_values, pitch = group_key
+        state_sample_size = int(rows["_state_sample_size"].iloc[0])
+        pitch_sample_size = int(len(rows))
+        swings = int(rows["_is_swing"].sum())
+        whiffs = int(rows["_is_whiff"].sum())
+        at_bats = int(rows["_is_ab"].sum())
+        hits = int(rows["_is_hit"].sum())
+
+        whiff_rate = whiffs / swings if swings else 0.0
+        baa = hits / at_bats if at_bats else 0.0
+        mlb_frequency = pitch_sample_size / state_sample_size if state_sample_size else 0.0
+        empirical_delta_run_exp = float(rows["delta_run_exp"].mean())
+
+        row = rows.iloc[0]
+        prev_pitch_type = state_values[-1]
+        values = {
+            "sample_size": pitch_sample_size,
+            "state_sample_size": state_sample_size,
+            "swing_count": swings,
+            "whiff_count": whiffs,
+            "whiff_rate": round(whiff_rate, 3),
+            "baa": round(baa, 3),
+            "mlb_frequency": round(mlb_frequency, 3),
+            "empirical_delta_run_exp": round(empirical_delta_run_exp, 3),
+            "low_sample_warning": pitch_sample_size < 25 or swings < 10,
+        }
+
+        for outs in OUTS_VALUES:
+            state_key = _state_key_from_row(row, prev_pitch_type, outs)
+            metrics_table.setdefault(state_key, {})[str(pitch)] = values
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("wb") as file:
+        pickle.dump(metrics_table, file)
+
+    return metrics_table
 
 
 def load_and_clean_data() -> pd.DataFrame:
@@ -236,6 +358,10 @@ def main() -> None:
     output = Path("model/q_table.pkl")
     q_table = export_augmented_q_table(agent_aug, idx_to_pitch, output_path=output)
     print(f"exported {len(q_table):,} state keys to {output}", flush=True)
+
+    metrics_output = Path("model/metrics.pkl")
+    metrics_table = export_statcast_metrics(df, output_path=metrics_output)
+    print(f"exported {len(metrics_table):,} metric state keys to {metrics_output}", flush=True)
 
 
 if __name__ == "__main__":
