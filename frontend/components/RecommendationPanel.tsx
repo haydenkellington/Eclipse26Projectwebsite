@@ -70,8 +70,12 @@ export function RecommendationPanel({ recommendation, loading, error, hasPreviou
         <Metric icon={<Gauge size={18} />} label="Best Q-Value" value={signed(recommendation.best_q_value)} />
         <Metric
           icon={<LineChart size={18} />}
-          label="Model Expected dRE"
+          label="Model Sequence dRE"
           value={signed(recommendation.best_expected_delta_run_exp)}
+        />
+        <Metric
+          label="Empirical dRE"
+          value={formatOptionalSigned(recommendation.empirical_delta_run_exp)}
         />
         <Metric icon={<Activity size={18} />} label="Whiff Rate" value={percent(recommendation.whiff_rate)} />
         <Metric label="Pitch Samples" value={recommendation.sample_size.toLocaleString()} />
@@ -152,4 +156,12 @@ function baa(value: number) {
 
 function signed(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
+}
+
+function formatOptionalSigned(value?: number) {
+  if (value === undefined || Number.isNaN(value)) {
+    return "--";
+  }
+
+  return signed(value);
 }

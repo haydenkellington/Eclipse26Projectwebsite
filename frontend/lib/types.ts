@@ -20,6 +20,7 @@ export type PitchComparison = {
   q_value: number;
   expected_delta_run_exp: number;
   expected_delta_run_exp_from_q: number;
+  empirical_delta_run_exp?: number;
   q_observed: boolean;
   sample_size: number;
   state_sample_size: number;
@@ -41,6 +42,7 @@ export type RecommendationResponse = {
   recommended_pitch_name: string;
   best_q_value: number;
   best_expected_delta_run_exp: number;
+  empirical_delta_run_exp?: number;
   sample_size: number;
   state_sample_size: number;
   swing_count: number;

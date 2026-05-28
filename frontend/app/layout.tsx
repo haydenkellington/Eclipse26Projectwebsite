@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Pitch Sequencing Run Value Recommender",
-  description: "Baseball pitch sequencing dashboard powered by Q-values and model expected delta run expectancy.",
+  description: "Baseball pitch sequencing dashboard powered by Q-values, model sequence dRE, and empirical dRE.",
 };
 
 export default function RootLayout({

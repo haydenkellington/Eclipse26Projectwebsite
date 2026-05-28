@@ -102,6 +102,7 @@ def recommend_pitch(payload: dict[str, Any]) -> dict[str, Any]:
         "recommended_pitch_name": best_available["pitch_name"],
         "best_q_value": best_available["q_value"],
         "best_expected_delta_run_exp": best_available["expected_delta_run_exp_from_q"],
+        "empirical_delta_run_exp": best_available.get("empirical_delta_run_exp"),
         "sample_size": best_available["sample_size"],
         "state_sample_size": best_available.get("state_sample_size", best_available["sample_size"]),
         "swing_count": best_available.get("swing_count", 0),

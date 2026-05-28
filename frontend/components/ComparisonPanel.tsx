@@ -54,7 +54,8 @@ export function ComparisonPanel({ recommendation }: Props) {
             <tr>
               <Th>Pitch</Th>
               <Th>Q</Th>
-              <Th>Model Exp dRE</Th>
+              <Th>Model Seq dRE</Th>
+              <Th>Emp dRE</Th>
               <Th>MLB%</Th>
               <Th>Weight</Th>
               <Th>Whiff%</Th>
@@ -83,6 +84,7 @@ function ComparisonRow({ row }: { row: PitchComparison }) {
       </Td>
       <Td>{signed(row.q_value)}</Td>
       <Td>{signed(row.expected_delta_run_exp_from_q)}</Td>
+      <Td>{formatOptionalSigned(row.empirical_delta_run_exp)}</Td>
       <Td>{percent(row.mlb_frequency)}</Td>
       <Td>{percent(row.model_weight)}</Td>
       <Td>{percent(row.whiff_rate)}</Td>
@@ -105,4 +107,12 @@ function percent(value: number) {
 
 function signed(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
+}
+
+function formatOptionalSigned(value?: number) {
+  if (value === undefined || Number.isNaN(value)) {
+    return "--";
+  }
+
+  return signed(value);
 }
