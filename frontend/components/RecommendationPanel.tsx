@@ -7,10 +7,30 @@ type Props = {
   recommendation: RecommendationResponse | null;
   loading: boolean;
   error: string | null;
-  hasPreviousPitch: boolean;
+  hasPitchInAtBat: boolean;
 };
 
-export function RecommendationPanel({ recommendation, loading, error, hasPreviousPitch }: Props) {
+export function RecommendationPanel({ recommendation, loading, error, hasPitchInAtBat }: Props) {
+  if (!hasPitchInAtBat) {
+    return (
+      <main className="grid min-h-[calc(100vh-89px)] place-items-center px-5 py-5 lg:px-8">
+        <section className="max-w-xl border border-amber/40 bg-orange-50 p-6 text-amber">
+          <div className="flex items-start gap-3">
+            <TriangleAlert className="mt-1 shrink-0" size={22} />
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em]">Pitch Needed</p>
+              <h2 className="mt-2 text-2xl font-black text-savant">Input at least one pitch</h2>
+              <p className="mt-3 text-sm leading-6">
+                This sequencing model only works once at least one pitch has already been thrown in the at-bat. Move
+                the count off 0-0 and choose the previous pitch to generate a recommendation.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (loading && !recommendation) {
     return <main className="grid min-h-[calc(100vh-89px)] place-items-center p-6 text-slate-500">Loading recommendation...</main>;
   }
@@ -47,14 +67,6 @@ export function RecommendationPanel({ recommendation, loading, error, hasPreviou
       </div>
 
       {error ? <p className="mb-4 text-sm text-amber">{error}</p> : null}
-      {!hasPreviousPitch ? (
-        <div className="mb-4 flex items-start gap-3 border border-amber/40 bg-orange-50 px-4 py-3 text-sm text-amber">
-          <TriangleAlert className="mt-0.5 shrink-0" size={17} />
-          <p>
-            This model is designed for in-at-bat sequencing, so choose a previous pitch once at least one pitch has been thrown.
-          </p>
-        </div>
-      ) : null}
       {isFallback || recommendation.low_sample_warning ? (
         <div className="mb-4 flex items-start gap-3 border border-amber/40 bg-orange-50 px-4 py-3 text-sm text-amber">
           <TriangleAlert className="mt-0.5 shrink-0" size={17} />
@@ -158,8 +170,8 @@ function signed(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
 }
 
-function formatOptionalSigned(value?: number) {
-  if (value === undefined || Number.isNaN(value)) {
+function formatOptionalSigned(value?: number | null) {
+  if (value === undefined || value === null || Number.isNaN(value)) {
     return "--";
   }
 

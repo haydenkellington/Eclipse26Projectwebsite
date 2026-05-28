@@ -109,8 +109,8 @@ function signed(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
 }
 
-function formatOptionalSigned(value?: number) {
-  if (value === undefined || Number.isNaN(value)) {
+function formatOptionalSigned(value?: number | null) {
+  if (value === undefined || value === null || Number.isNaN(value)) {
     return "--";
   }
 

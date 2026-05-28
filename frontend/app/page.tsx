@@ -28,9 +28,18 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   const requestKey = useMemo(() => JSON.stringify(request), [request]);
+  const hasPitchInAtBat = request.balls + request.strikes > 0 && request.prev_pitch !== null;
 
   useEffect(() => {
     const controller = new AbortController();
+
+    if (!hasPitchInAtBat) {
+      setRecommendation(null);
+      setLoading(false);
+      setError(null);
+      return () => controller.abort();
+    }
+
     setLoading(true);
     setError(null);
 
@@ -52,7 +61,7 @@ export default function Home() {
       });
 
     return () => controller.abort();
-  }, [requestKey]);
+  }, [requestKey, hasPitchInAtBat]);
 
   return (
     <div className="min-h-screen bg-ink">
@@ -75,7 +84,7 @@ export default function Home() {
           recommendation={recommendation}
           loading={loading}
           error={error}
-          hasPreviousPitch={request.prev_pitch !== null}
+          hasPitchInAtBat={hasPitchInAtBat}
         />
         <ComparisonPanel recommendation={recommendation} />
       </div>
