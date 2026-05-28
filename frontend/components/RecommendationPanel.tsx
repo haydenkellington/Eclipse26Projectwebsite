@@ -74,7 +74,18 @@ export function RecommendationPanel({ recommendation, loading, error, hasPreviou
           value={signed(recommendation.best_expected_delta_run_exp)}
         />
         <Metric icon={<Activity size={18} />} label="Whiff Rate" value={percent(recommendation.whiff_rate)} />
-        <Metric label="Samples" value={recommendation.sample_size.toLocaleString()} />
+        <Metric label="Pitch Samples" value={recommendation.sample_size.toLocaleString()} />
+      </div>
+
+      <div className="mt-4 border border-line bg-white px-4 py-3 text-sm text-slate-700">
+        This pitch appears in{" "}
+        <span className="font-bold text-savant">{recommendation.sample_size.toLocaleString()}</span> of{" "}
+        <span className="font-bold text-savant">{recommendation.state_sample_size.toLocaleString()}</span> matching
+        state pitches. Whiff rate is{" "}
+        <span className="font-bold text-savant">
+          {recommendation.whiff_count.toLocaleString()} whiffs / {recommendation.swing_count.toLocaleString()} swings
+        </span>
+        .
       </div>
 
       <section className="mt-6 grid gap-4 lg:grid-cols-2">
@@ -85,7 +96,7 @@ export function RecommendationPanel({ recommendation, loading, error, hasPreviou
             <span className="font-mono text-xl text-clay">{recommendation.recommended_pitch}</span>
           </p>
           <p className="mt-3 text-sm text-slate-600">
-            Highest available Q, equivalent to lowest expected delta run expectancy.
+            Highest available Q, equivalent to lowest model expected delta run expectancy.
           </p>
         </div>
         <div className="border border-line bg-panel p-5">

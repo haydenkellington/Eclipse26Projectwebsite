@@ -22,6 +22,9 @@ export type PitchComparison = {
   expected_delta_run_exp_from_q: number;
   q_observed: boolean;
   sample_size: number;
+  state_sample_size: number;
+  swing_count: number;
+  whiff_count: number;
   whiff_rate: number;
   baa: number;
   mlb_frequency: number;
@@ -39,6 +42,9 @@ export type RecommendationResponse = {
   best_q_value: number;
   best_expected_delta_run_exp: number;
   sample_size: number;
+  state_sample_size: number;
+  swing_count: number;
+  whiff_count: number;
   whiff_rate: number;
   baa: number;
   mlb_frequency: number;

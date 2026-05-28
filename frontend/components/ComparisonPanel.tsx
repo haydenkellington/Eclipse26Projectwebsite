@@ -58,7 +58,7 @@ export function ComparisonPanel({ recommendation }: Props) {
               <Th>MLB%</Th>
               <Th>Weight</Th>
               <Th>Whiff%</Th>
-              <Th>N</Th>
+              <Th>Pitch N</Th>
             </tr>
           </thead>
           <tbody>
