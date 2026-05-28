@@ -132,7 +132,11 @@ export function RecommendationPanel({ recommendation, loading, error, hasPitchIn
 
       <section className="mt-6 border border-line bg-panel p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-clay">Model Interpretation</p>
-        <p className="mt-3 text-sm leading-6 text-slate-700">{recommendation.interpretation}</p>
+        <p className="mt-3 text-sm leading-6 text-slate-700">
+          The model is estimating which pitch is most likely to help the pitcher limit future runs from this count,
+          base/out state, matchup, and previous pitch. A higher Q-value means the model likes that pitch more. A lower
+          model sequence dRE means the pitch is expected to reduce the offense&apos;s run expectancy more.
+        </p>
       </section>
     </main>
   );
