@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ComparisonPanel } from "@/components/ComparisonPanel";
 import { ControlPanel } from "@/components/ControlPanel";
 import { RecommendationPanel } from "@/components/RecommendationPanel";
+import { ValueKey } from "@/components/ValueKey";
 import { fetchRecommendation } from "@/lib/api";
 import type { RecommendationRequest, RecommendationResponse } from "@/lib/types";
 
@@ -78,6 +79,7 @@ export default function Home() {
         />
         <ComparisonPanel recommendation={recommendation} />
       </div>
+      <ValueKey />
     </div>
   );
 }
