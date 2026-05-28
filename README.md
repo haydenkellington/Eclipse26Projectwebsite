@@ -2,8 +2,6 @@
 
 Interactive baseball pitch sequencing dashboard powered by a FastAPI recommendation engine and a Next.js frontend. The app uses an exported reinforcement-learning Q-table plus precomputed Statcast metrics to recommend the best available pitch for a game state.
 
-![Dashboard screenshot](dashboard-screenshot.png)
-
 ## What It Does
 
 - Recommends the best available pitch from a selected arsenal.
