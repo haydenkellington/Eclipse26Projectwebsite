@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  background: #f3f6f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f3f6f9;
+  color: #17212b;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #c92127;
+  outline-offset: 2px;
+}
