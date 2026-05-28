@@ -95,9 +95,6 @@ export function ControlPanel({ value, onChange, onReset }: Props) {
               </option>
             ))}
           </select>
-          <p className="mt-2 border-l-2 border-amber bg-orange-50 px-3 py-2 text-xs leading-5 text-amber">
-            Model recommendations are intended for situations where at least one pitch has already been thrown in the at-bat.
-          </p>
         </section>
 
         <section>
