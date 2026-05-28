@@ -74,7 +74,8 @@ export default function Home() {
             </h1>
           </div>
           <p className="max-w-2xl text-sm leading-6 text-slate-200">
-            Compare available pitch choices by learned Q-value, model sequence dRE, empirical dRE, MLB usage, and whiff profile.
+            Choose a game state and pitch arsenal to see which pitch the model prefers, how it compares to MLB usage,
+            and how often similar pitches produced swings, misses, and run-value changes.
           </p>
         </div>
       </header>

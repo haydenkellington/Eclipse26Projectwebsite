@@ -112,7 +112,8 @@ export function RecommendationPanel({ recommendation, loading, error, hasPitchIn
             <span className="font-mono text-xl text-clay">{recommendation.recommended_pitch}</span>
           </p>
           <p className="mt-3 text-sm text-slate-600">
-            Highest available Q, equivalent to lowest model expected delta run expectancy.
+            Of the pitches currently in the selected arsenal, this is the option the model expects to help the pitcher
+            the most in this situation.
           </p>
         </div>
         <div className="border border-line bg-panel p-5">
