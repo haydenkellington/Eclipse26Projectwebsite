@@ -82,6 +82,7 @@ export default function Home() {
       <div className="grid lg:grid-cols-[320px_minmax(0,1fr)_480px]">
         <ControlPanel value={request} onChange={setRequest} onReset={() => setRequest(DEFAULT_REQUEST)} />
         <RecommendationPanel
+          request={request}
           recommendation={recommendation}
           loading={loading}
           error={error}
