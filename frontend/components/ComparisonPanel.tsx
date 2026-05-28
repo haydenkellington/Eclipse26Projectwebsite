@@ -54,7 +54,7 @@ export function ComparisonPanel({ recommendation }: Props) {
             <tr>
               <Th>Pitch</Th>
               <Th>Q</Th>
-              <Th>Exp dRE</Th>
+              <Th>Model Exp dRE</Th>
               <Th>MLB%</Th>
               <Th>Weight</Th>
               <Th>Whiff%</Th>

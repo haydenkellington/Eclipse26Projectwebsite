@@ -70,7 +70,7 @@ export function RecommendationPanel({ recommendation, loading, error, hasPreviou
         <Metric icon={<Gauge size={18} />} label="Best Q-Value" value={signed(recommendation.best_q_value)} />
         <Metric
           icon={<LineChart size={18} />}
-          label="Expected dRE"
+          label="Model Expected dRE"
           value={signed(recommendation.best_expected_delta_run_exp)}
         />
         <Metric icon={<Activity size={18} />} label="Whiff Rate" value={percent(recommendation.whiff_rate)} />
@@ -96,7 +96,7 @@ export function RecommendationPanel({ recommendation, loading, error, hasPreviou
           <p className="mt-3 text-3xl font-black text-savant">{unavailableText}</p>
           {recommendation.best_unavailable_pitch ? (
             <p className="mt-3 text-sm text-slate-600">
-              Q {signed(recommendation.best_unavailable_q_value ?? 0)} / expected dRE{" "}
+              Q {signed(recommendation.best_unavailable_q_value ?? 0)} / model expected dRE{" "}
               {signed(recommendation.best_unavailable_expected_delta_run_exp ?? 0)}
             </p>
           ) : null}

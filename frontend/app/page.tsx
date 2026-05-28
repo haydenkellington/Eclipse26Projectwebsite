@@ -64,7 +64,7 @@ export default function Home() {
             </h1>
           </div>
           <p className="max-w-2xl text-sm leading-6 text-slate-200">
-            Compare available pitch choices by learned Q-value, expected delta run expectancy, MLB usage, and whiff profile.
+            Compare available pitch choices by learned Q-value, model expected delta run expectancy, MLB usage, and whiff profile.
           </p>
         </div>
       </header>
