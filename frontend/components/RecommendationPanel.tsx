@@ -113,17 +113,6 @@ export function RecommendationPanel({ request, recommendation, loading, error, h
         <Metric label="Pitch Samples" value={recommendation.sample_size.toLocaleString()} />
       </div>
 
-      <div className="mt-4 border border-line bg-white px-4 py-3 text-sm text-slate-700">
-        This pitch appears in{" "}
-        <span className="font-bold text-savant">{recommendation.sample_size.toLocaleString()}</span> of{" "}
-        <span className="font-bold text-savant">{recommendation.state_sample_size.toLocaleString()}</span> matching
-        state pitches. Whiff rate is{" "}
-        <span className="font-bold text-savant">
-          {recommendation.whiff_count.toLocaleString()} whiffs / {recommendation.swing_count.toLocaleString()} swings
-        </span>
-        .
-      </div>
-
       <section className="mt-6 grid gap-4 lg:grid-cols-2">
         <div className="border border-line bg-panel p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-clay">Best Available</p>
