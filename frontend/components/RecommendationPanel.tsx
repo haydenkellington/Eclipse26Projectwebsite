@@ -60,7 +60,6 @@ export function RecommendationPanel({ request, recommendation, loading, error, h
     : "None";
   const isFallback = recommendation.q_source === "deterministic_fallback";
   const confidence = getConfidence(recommendation);
-  const disagreement = getDisagreement(recommendation);
   const whyThisPitch = getWhyThisPitch(request, recommendation);
 
   return (
@@ -99,13 +98,6 @@ export function RecommendationPanel({ request, recommendation, loading, error, h
           </p>
         </div>
       ) : null}
-      {disagreement ? (
-        <div className="mb-4 flex items-start gap-3 border border-amber/40 bg-orange-50 px-4 py-3 text-sm text-amber">
-          <TriangleAlert className="mt-0.5 shrink-0" size={17} />
-          <p>{disagreement}</p>
-        </div>
-      ) : null}
-
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Metric icon={<Gauge size={18} />} label="Best Q-Value" value={signed(recommendation.best_q_value)} />
         <Metric
@@ -249,31 +241,6 @@ function getConfidence(recommendation: RecommendationResponse) {
     detail: "Limited sample size or missing learned Q-value. Use this as a directional signal.",
     className: "border-amber/30 bg-orange-50 text-amber",
   };
-}
-
-function getDisagreement(recommendation: RecommendationResponse) {
-  const empirical = recommendation.empirical_delta_run_exp;
-
-  if (empirical === undefined || empirical === null || Number.isNaN(empirical)) {
-    return null;
-  }
-
-  const model = recommendation.best_expected_delta_run_exp;
-  const meaningfulGap = Math.abs(model - empirical) >= 0.05;
-
-  if (model < -0.01 && empirical > 0.01) {
-    return "Model and observed results disagree here: the sequence model likes this pitch, but similar Statcast pitches have raised run expectancy in this sample.";
-  }
-
-  if (model > 0.01 && empirical < -0.01) {
-    return "Model and observed results disagree here: similar Statcast pitches have worked well, but the sequence model is less confident about this pitch in the broader at-bat context.";
-  }
-
-  if (meaningfulGap) {
-    return "Model and observed results are separated by a noticeable amount, so treat this as a spot where sequencing context and raw outcomes may be telling slightly different stories.";
-  }
-
-  return null;
 }
 
 function getWhyThisPitch(request: RecommendationRequest, recommendation: RecommendationResponse) {
