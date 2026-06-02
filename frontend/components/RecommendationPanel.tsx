@@ -181,10 +181,6 @@ function percent(value: number) {
   return `${Math.round(value * 100)}%`;
 }
 
-function baa(value: number) {
-  return value.toFixed(3).replace(/^0/, "");
-}
-
 function signed(value: number) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
 }

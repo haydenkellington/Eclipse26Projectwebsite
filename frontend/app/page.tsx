@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ComparisonPanel } from "@/components/ComparisonPanel";
 import { ControlPanel } from "@/components/ControlPanel";
 import { RecommendationPanel } from "@/components/RecommendationPanel";
@@ -27,19 +27,17 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const requestKey = useMemo(() => JSON.stringify(request), [request]);
   const hasPitchInAtBat = request.balls + request.strikes > 0 && request.prev_pitch !== null;
+  const visibleRecommendation = hasPitchInAtBat ? recommendation : null;
+  const visibleLoading = hasPitchInAtBat && loading;
+  const visibleError = hasPitchInAtBat ? error : null;
 
   useEffect(() => {
-    const controller = new AbortController();
-
     if (!hasPitchInAtBat) {
-      setRecommendation(null);
-      setLoading(false);
-      setError(null);
-      return () => controller.abort();
+      return;
     }
 
+    const controller = new AbortController();
     setLoading(true);
     setError(null);
 
@@ -61,7 +59,7 @@ export default function Home() {
       });
 
     return () => controller.abort();
-  }, [requestKey, hasPitchInAtBat]);
+  }, [request, hasPitchInAtBat]);
 
   return (
     <div className="min-h-screen bg-ink">
@@ -83,12 +81,12 @@ export default function Home() {
         <ControlPanel value={request} onChange={setRequest} onReset={() => setRequest(DEFAULT_REQUEST)} />
         <RecommendationPanel
           request={request}
-          recommendation={recommendation}
-          loading={loading}
-          error={error}
+          recommendation={visibleRecommendation}
+          loading={visibleLoading}
+          error={visibleError}
           hasPitchInAtBat={hasPitchInAtBat}
         />
-        <ComparisonPanel recommendation={recommendation} />
+        <ComparisonPanel recommendation={visibleRecommendation} />
       </div>
       <ValueKey />
     </div>
