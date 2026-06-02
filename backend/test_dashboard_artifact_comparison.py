@@ -147,7 +147,10 @@ def main() -> int:
     print()
     print(f"Current artifact states: {len(current):,}")
     print(f"FS-inclusive FINAL_(7) artifact states: {len(final7):,}")
-    print("New artifact is separate and does not replace the live dashboard model.")
+    if current == final7:
+        print("Active dashboard model matches the FS-inclusive FINAL_(7) artifact.")
+    else:
+        print("Active dashboard model differs from the FS-inclusive FINAL_(7) artifact.")
     return 0
 
 
