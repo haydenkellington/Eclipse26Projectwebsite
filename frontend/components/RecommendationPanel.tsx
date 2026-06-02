@@ -44,11 +44,30 @@ export function RecommendationPanel({ request, recommendation, loading, error, h
   }
 
   if (loading && !recommendation) {
-    return <main className="grid min-h-[calc(100vh-89px)] place-items-center p-6 text-slate-500">Loading recommendation...</main>;
+    return (
+      <main className="grid min-h-[calc(100vh-89px)] place-items-center p-6 text-center text-slate-500">
+        <div>
+          <p className="font-bold text-savant">Loading recommendation...</p>
+          <p className="mt-2 max-w-md text-sm leading-6">
+            If the free demo server is waking up, this can take about 30-45 seconds on the first request.
+          </p>
+        </div>
+      </main>
+    );
   }
 
   if (error && !recommendation) {
-    return <main className="grid min-h-[calc(100vh-89px)] place-items-center p-6 text-clay">{error}</main>;
+    return (
+      <main className="grid min-h-[calc(100vh-89px)] place-items-center p-6 text-center text-clay">
+        <div>
+          <p className="font-bold">The model server did not respond yet.</p>
+          <p className="mt-2 max-w-md text-sm leading-6">
+            Free hosting can take 30-45 seconds to wake up. Wait a moment, then change an input or refresh.
+          </p>
+          <p className="mt-3 text-xs text-slate-500">{error}</p>
+        </div>
+      </main>
+    );
   }
 
   if (!recommendation) {

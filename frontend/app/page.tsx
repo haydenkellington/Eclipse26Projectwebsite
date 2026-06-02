@@ -77,6 +77,10 @@ export default function Home() {
           </p>
         </div>
       </header>
+      <div className="border-b border-line bg-orange-50 px-5 py-2 text-sm text-amber lg:px-8">
+        Public demo note: the free model server may sleep after inactivity, so the first recommendation can take 30-45
+        seconds to load.
+      </div>
       <div className="grid lg:grid-cols-[320px_minmax(0,1fr)_480px]">
         <ControlPanel value={request} onChange={setRequest} onReset={() => setRequest(DEFAULT_REQUEST)} />
         <RecommendationPanel
