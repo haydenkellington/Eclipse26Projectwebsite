@@ -27,8 +27,9 @@ def read_notebook_outputs() -> str:
 
 def parse_final7_tunneling_table(outputs: str) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
+    pitch_pattern = "|".join(re.escape(pitch) for pitch in WEBSITE_PITCHES)
     pattern = re.compile(
-        r"^(CH|CU|FC|FF|SI|SL|ST)\s+"
+        rf"^({pitch_pattern})\s+"
         r"(?P<memoryless>[A-Z]+)\s+(?P<memoryless_q>-?\d+\.\d+)\s+"
         r"(?P<augmented>[A-Z]+)\s+(?P<augmented_q>-?\d+\.\d+)",
         flags=re.MULTILINE,
@@ -116,7 +117,8 @@ def main() -> int:
     print()
     print("Notes:")
     print("- FINAL_(7) values come from the notebook's printed tunneling table, not a saved full q_table artifact.")
-    print("- That printed table excludes FS, so this is not a fair FS-inclusive FINAL_(7) dashboard comparison yet.")
+    print("- The parser includes FS when FS rows exist in the notebook output.")
+    print("- The current FINAL_(7) printed table has no FS row, so this is not a full FS-inclusive dashboard comparison yet.")
     print("- Current values come from the live backend q_table.pkl through recommend_pitch().")
     print("- A full FS-inclusive dashboard-vs-dashboard comparison requires exporting FINAL_(7) to q_table_final7.pkl first.")
 
