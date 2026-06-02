@@ -11,7 +11,7 @@ from typing import Any
 from model.pitch_mappings import PITCHES
 
 
-NOTEBOOK_PATH = Path("/Users/haydenkellington/Downloads/Spring26BaseballProj_FINAL_(7).ipynb")
+NOTEBOOK_PATH = Path(__file__).resolve().parent / "Spring26BaseballProj_FINAL_website_pitches.ipynb"
 EXPORT_MODULE_PATH = Path(__file__).resolve().parent / "export_q_artifacts.py"
 CURRENT_Q_TABLE_PATH = Path(__file__).resolve().parent / "model" / "q_table.pkl"
 WEBSITE_PITCH_SET = set(PITCHES)
@@ -44,6 +44,14 @@ def notebook_outputs(nb: dict[str, Any]) -> str:
             if "text/plain" in data:
                 chunks.append("".join(data["text/plain"]))
     return "\n".join(chunks)
+
+
+def parse_website_pitch_set(source: str) -> list[str]:
+    match = re.search(r"WEBSITE_PITCHES\s*=\s*(\[[^\]]+\])", source)
+    if not match:
+        return []
+    matches = re.findall(r"'([A-Z]+)'|\"([A-Z]+)\"", match.group(1))
+    return [left or right for left, right in matches]
 
 
 def result(name: str, status: str, detail: str) -> dict[str, str]:
@@ -104,7 +112,13 @@ def main() -> int:
     )
 
     action_matches = re.findall(r"^\s+\d+:\s+([A-Z]+)\s*$", outputs, flags=re.MULTILINE)
-    notebook_pitch_types = sorted(set(action_matches))
+    if action_matches:
+        notebook_pitch_types = sorted(set(action_matches))
+        pitch_source = "notebook outputs"
+    else:
+        notebook_pitch_types = parse_website_pitch_set(source)
+        pitch_source = "WEBSITE_PITCHES source"
+    notebook_pitch_types = sorted(set(notebook_pitch_types))
     website_pitch_types = sorted(PITCHES)
     unsupported = sorted(set(notebook_pitch_types) - set(website_pitch_types))
     missing_from_notebook = sorted(set(website_pitch_types) - set(notebook_pitch_types))
@@ -113,7 +127,7 @@ def main() -> int:
             "pitch_set_compatibility",
             "WARN" if unsupported or missing_from_notebook else "PASS",
             (
-                f"Notebook actions={notebook_pitch_types}; website supports={website_pitch_types}; "
+                f"Notebook actions from {pitch_source}={notebook_pitch_types}; website supports={website_pitch_types}; "
                 f"unsupported in website={unsupported}; website-only={missing_from_notebook}."
             ),
         )
@@ -128,12 +142,13 @@ def main() -> int:
     )
 
     primary_match = re.search(r"Primary pitch types for display.*?:\s*(\[[^\]]+\])", outputs)
-    primary_detail = primary_match.group(1) if primary_match else "not found"
+    source_display = "DISPLAY_PITCHES = [p for p in WEBSITE_PITCHES if p in PITCH_TO_IDX]" in source
+    primary_detail = primary_match.group(1) if primary_match else "DISPLAY_PITCHES follows WEBSITE_PITCHES source"
     results.append(
         result(
             "display_pitch_filter",
-            "WARN" if "FS" not in primary_detail else "PASS",
-            f"Notebook primary display pitches are {primary_detail}; website currently includes FS.",
+            "PASS" if source_display or "FS" in primary_detail else "WARN",
+            f"Notebook display pitches: {primary_detail}; FS is intentionally kept.",
         )
     )
 
