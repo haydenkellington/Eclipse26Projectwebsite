@@ -18,6 +18,8 @@ This project deploys as two free services:
 
 The repo also includes `render.yaml`, so Render can use it as a blueprint.
 
+The backend pins Render to Python 3.12 with both `PYTHON_VERSION` in `render.yaml` and `backend/.python-version`. This avoids Python 3.14 package-build issues during deployment.
+
 ## Frontend - Vercel Free
 
 1. Import the same GitHub repo into Vercel.
