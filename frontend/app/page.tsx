@@ -70,6 +70,9 @@ export default function Home() {
             <h1 className="mt-1 text-2xl font-black leading-tight md:text-3xl">
               Expected Run Value Pitch Recommender
             </h1>
+            <p className="mt-2 text-sm font-semibold text-slate-200">
+              Hayden Kellington | Anay Takkallapalli | Dhruv Sehgal | Abhishai Ganta
+            </p>
           </div>
           <p className="max-w-2xl text-sm leading-6 text-slate-200">
             Choose a game state and pitch arsenal to see which pitch the model prefers, how it compares to MLB usage,
